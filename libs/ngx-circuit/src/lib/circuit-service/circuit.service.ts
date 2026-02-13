@@ -1,11 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-  Inject,
-  Injectable,
-  Optional,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { Injectable, signal, WritableSignal, inject } from '@angular/core';
 import { catchError, of, tap } from 'rxjs';
 import {
   CIRCUIT_CONFIG,
@@ -44,19 +38,16 @@ export class CircuitService {
   private _error = signal<string | null>(null);
   readonly error = this._error.asReadonly();
 
-  constructor(
-    @Inject(CIRCUIT_CONFIG) private configLoader: CircuitLoader,
-    private http: HttpClient,
-    @Inject(CIRCUIT_CONTEXT)
-    @Optional()
-    private context?: CircuitContext | (() => CircuitContext),
-    @Inject(CIRCUIT_OPTIONS)
-    @Optional()
-    private options?: CircuitOptions,
-    @Inject(CIRCUIT_TRACKER)
-    @Optional()
-    private tracker?: CircuitTracker,
-  ) {
+  private configLoader = inject<CircuitLoader>(CIRCUIT_CONFIG);
+  private http = inject(HttpClient);
+  private context = inject<CircuitContext | (() => CircuitContext)>(
+    CIRCUIT_CONTEXT,
+    { optional: true },
+  );
+  private options = inject<CircuitOptions>(CIRCUIT_OPTIONS, { optional: true });
+  private tracker = inject<CircuitTracker>(CIRCUIT_TRACKER, { optional: true });
+
+  constructor() {
     this.loadConfig();
   }
 

@@ -9,7 +9,7 @@ import {
 import { CircuitService } from '../circuit-service/circuit.service';
 
 @Directive({
-  selector: '[circuit]',
+  selector: '[cktCircuit]',
   standalone: true,
 })
 export class CircuitDirective {
@@ -20,13 +20,13 @@ export class CircuitDirective {
   private _featureName = '';
   private _elseTemplate: TemplateRef<unknown> | null = null;
 
-  @Input('circuit')
-  set featureName(name: string) {
+  @Input()
+  set cktCircuit(name: string) {
     this._featureName = name;
   }
 
-  @Input('circuitElse')
-  set elseTemplate(tpl: TemplateRef<unknown> | null) {
+  @Input()
+  set cktCircuitElse(tpl: TemplateRef<unknown> | null) {
     this._elseTemplate = tpl;
   }
 

@@ -68,7 +68,9 @@ describe('circuitGuard', () => {
   });
 
   it('should warn and allow activation when no circuit feature is provided', () => {
-    const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const consoleSpy = vi
+      .spyOn(console, 'warn')
+      .mockImplementation(() => undefined);
     const route = {
       data: {},
     } as unknown as ActivatedRouteSnapshot;
