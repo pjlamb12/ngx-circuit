@@ -1,101 +1,196 @@
-# NgxCircuit
+# ngx-circuit
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A powerful, type-safe feature flag library for Angular applications. `ngx-circuit` allows you to manage feature toggles with ease, supporting various strategies like boolean flags, time-based activation, percentage rollouts, user groups, environment contexts, and more.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## Features
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- **Flexible Configuration**: Load flags from a static object or an HTTP endpoint.
+- **Advanced Flag Types**: Support for Boolean, Time-based, Percentage, Group, Environment, Device, and Composite flags.
+- **Type-Safe**: Built with TypeScript for excellent developer experience.
+- **Structural Directive**: Conditionally render templates using `*circuit`.
+- **Route Guard**: Protect routes using `circuitGuard`.
+- **Reactive Service**: `CircuitService` uses Signals for reactive state management.
+- **Context Awareness**: Inject user/session context for advanced flag evaluation.
 
-## Run tasks
+## Installation
 
-To run the dev server for your app, use:
+Install via npm:
 
-```sh
-npx nx serve circuit-demo
+```bash
+npm install ngx-circuit
 ```
 
-To create a production bundle:
+## Configuration
 
-```sh
-npx nx build circuit-demo
+### 1. Providing Configuration
+
+You can provide the configuration using `provideCircuitConfig` in your application config.
+
+**Option A: Static Object**
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideCircuitConfig } from 'ngx-circuit';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideCircuitConfig({
+      featureA: true,
+      featureB: false,
+    }),
+  ],
+};
 ```
 
-To see all available targets to run for a project, run:
+**Option B: HTTP endpoint**
 
-```sh
-npx nx show project circuit-demo
+Load configuration from a remote JSON file or API.
+
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideCircuitConfig } from 'ngx-circuit';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideHttpClient(),
+    provideCircuitConfig('/api/flags'), // URL to fetch config
+  ],
+};
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### 2. Providing Context (Optional)
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+For advanced flags like Percentage, Group, or Device, you need to provide context about the current user/session.
 
-## Add new projects
+```typescript
+import { ApplicationConfig } from '@angular/core';
+import { provideCircuitConfig, provideCircuitContext } from 'ngx-circuit';
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/angular:app demo
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideCircuitConfig({ ... }),
+    provideCircuitContext({
+      userId: 'user-123',
+      sessionId: 'session-abc',
+      groups: ['beta-testers', 'admin'],
+      environment: 'production',
+      platform: 'mobile'
+    })
+    // Or providing a factory function:
+    // provideCircuitContext(() => ({ userId: localStorage.getItem('userId') }))
+  ],
+};
 ```
 
-To generate a new library, use:
+## Usage
 
-```sh
-npx nx g @nx/angular:lib mylib
+### 1. CircuitService
+
+Inject `CircuitService` to check feature flags programmatically.
+
+```typescript
+import { Component, inject } from '@angular/core';
+import { CircuitService } from 'ngx-circuit';
+
+@Component({ ... })
+export class MyComponent {
+  private circuit = inject(CircuitService);
+
+  checkFeature() {
+    if (this.circuit.isEnabled('newFeature')) {
+      // feature logic
+    }
+  }
+}
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+### 2. Structural Directive (\*circuit)
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Conditionally render elements in your template.
 
-## Set up CI!
+```html
+<div *circuit="'featureA'">Feature A is enabled!</div>
 
-### Step 1
+<div *circuit="'featureB'; else fallback">Feature B is enabled!</div>
 
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
+<ng-template #fallback> Feature B is disabled. </ng-template>
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+### 3. Route Guard (circuitGuard)
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Protect routes based on feature flags.
 
-### Step 2
+```typescript
+import { Routes } from '@angular/router';
+import { circuitGuard } from 'ngx-circuit';
 
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
+export const routes: Routes = [
+  {
+    path: 'new-feature',
+    canActivate: [circuitGuard],
+    data: {
+      circuit: 'featureA', // Feature flag to check
+      circuitRedirectUrl: '/home', // Optional redirect if disabled
+    },
+    loadComponent: () => import('./...').then((m) => m.NewFeatureComponent),
+  },
+];
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## Advanced Flag Types
 
-## Install Nx Console
+Define complex rules in your configuration object.
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+```typescript
+import { CircuitType } from 'ngx-circuit';
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+const config = {
+  // Simple Boolean
+  basicFlag: true,
 
-## Useful links
+  // Time-based: specific date range
+  promoFeature: {
+    type: CircuitType.TimeBased,
+    startDate: '2023-12-01',
+    endDate: '2023-12-31',
+  },
 
-Learn more:
+  // Percentage Rollout: 20% of users
+  betaTest: {
+    type: CircuitType.Percentage,
+    percentage: 20,
+  },
 
-- [Learn more about this workspace setup](https://nx.dev/getting-started/tutorials/angular-monorepo-tutorial?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+  // User Group
+  adminOnly: {
+    type: CircuitType.Group,
+    groups: ['admin'],
+  },
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+  // Environment Specific
+  devTools: {
+    type: CircuitType.Environment,
+    environments: ['development', 'staging'],
+  },
+
+  // Device Specific
+  mobileView: {
+    type: CircuitType.Device,
+    devices: ['mobile', 'tablet'],
+  },
+
+  // Composite: ALL conditions must be met
+  complexFeature: {
+    type: CircuitType.Composite,
+    conditions: [
+      { type: CircuitType.Group, groups: ['beta-testers'] },
+      { type: CircuitType.TimeBased, startDate: '2024-01-01' },
+    ],
+  },
+};
+```
+
+## License
+
+MIT
