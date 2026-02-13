@@ -6,8 +6,8 @@ import { signal } from '@angular/core';
 
 @Component({
   template: `
-    <div *circuit="'featureA'">Feature A Content</div>
-    <div *circuit="'featureB'; else fallback">Feature B Content</div>
+    <div *cktCircuit="'featureA'">Feature A Content</div>
+    <div *cktCircuit="'featureB'; else fallback">Feature B Content</div>
     <ng-template #fallback>Fallback Content</ng-template>
   `,
   imports: [CircuitDirective],
