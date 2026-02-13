@@ -1,12 +1,29 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable, signal, WritableSignal } from '@angular/core';
+import {
+  Inject,
+  Injectable,
+  Optional,
+  signal,
+  WritableSignal,
+} from '@angular/core';
 import { catchError, of, tap } from 'rxjs';
 import {
   CIRCUIT_CONFIG,
   CircuitConfig,
   CircuitLoader,
   CircuitFlagConfig,
+  CircuitType,
+  TimeBasedConfig,
+  PercentageConfig,
+  GroupConfig,
+  EnvironmentConfig,
+  DeviceConfig,
+  CompositeConfig,
 } from '../circuit.config';
+import {
+  CIRCUIT_CONTEXT,
+  CircuitContext,
+} from '../circuit-context/circuit.context';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +41,9 @@ export class CircuitService {
   constructor(
     @Inject(CIRCUIT_CONFIG) private configLoader: CircuitLoader,
     private http: HttpClient,
+    @Inject(CIRCUIT_CONTEXT)
+    @Optional()
+    private context?: CircuitContext | (() => CircuitContext),
   ) {
     this.loadConfig();
   }
@@ -63,10 +83,104 @@ export class CircuitService {
       return false;
     }
 
+    return this.checkFlag(flag, feature);
+  }
+
+  private checkFlag(flag: CircuitFlagConfig, featureName: string): boolean {
     if (typeof flag === 'boolean') {
       return flag;
     }
 
-    return false;
+    switch (flag.type) {
+      case CircuitType.TimeBased:
+        return this.checkTimeBased(flag);
+      case CircuitType.Percentage:
+        return this.checkPercentage(flag, featureName);
+      case CircuitType.Group:
+        return this.checkGroup(flag);
+      case CircuitType.Environment:
+        return this.checkEnvironment(flag);
+      case CircuitType.Device:
+        return this.checkDevice(flag);
+      case CircuitType.Composite:
+        return this.checkComposite(flag, featureName);
+      default:
+        return false;
+    }
+  }
+
+  private getContext(): CircuitContext {
+    if (!this.context) {
+      return {};
+    }
+    return typeof this.context === 'function' ? this.context() : this.context;
+  }
+
+  private checkTimeBased(flag: TimeBasedConfig): boolean {
+    const now = new Date();
+    const startDate = new Date(flag.startDate);
+    const endDate = flag.endDate ? new Date(flag.endDate) : null;
+
+    if (now < startDate) {
+      return false;
+    }
+
+    if (endDate && now > endDate) {
+      return false;
+    }
+
+    return true;
+  }
+
+  private checkPercentage(
+    flag: PercentageConfig,
+    featureName: string,
+  ): boolean {
+    const context = this.getContext();
+    const sessionId = context.sessionId || this.getOrCreateSessionId();
+    const hash = this.hashString(sessionId + featureName);
+    return hash % 100 < flag.percentage;
+  }
+
+  private hashString(str: string): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return Math.abs(hash);
+  }
+
+  private getOrCreateSessionId(): string {
+    const STORAGE_KEY = 'circuit_session_id';
+    let sessionId = sessionStorage.getItem(STORAGE_KEY);
+    if (!sessionId) {
+      sessionId = Math.random().toString(36).substring(2, 15);
+      sessionStorage.setItem(STORAGE_KEY, sessionId);
+    }
+    return sessionId;
+  }
+
+  private checkGroup(flag: GroupConfig): boolean {
+    const context = this.getContext();
+    const userGroups = context.groups || [];
+    return flag.groups.some((g: string) => userGroups.includes(g));
+  }
+
+  private checkEnvironment(flag: EnvironmentConfig): boolean {
+    const context = this.getContext();
+    return flag.environments.includes(context.environment || '');
+  }
+
+  private checkDevice(flag: DeviceConfig): boolean {
+    const context = this.getContext();
+    return flag.devices.includes(context.platform || '');
+  }
+
+  private checkComposite(flag: CompositeConfig, featureName: string): boolean {
+    return flag.conditions.every((condition: CircuitFlagConfig) =>
+      this.checkFlag(condition, featureName),
+    );
   }
 }
