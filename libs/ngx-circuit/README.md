@@ -7,7 +7,7 @@ A powerful, type-safe feature flag library for Angular applications. `ngx-circui
 - **Flexible Configuration**: Load flags from a static object or an HTTP endpoint.
 - **Advanced Flag Types**: Support for Boolean, Time-based, Percentage, Group, Environment, Device, and Composite flags.
 - **Type-Safe**: Built with TypeScript for excellent developer experience.
-- **Structural Directive**: Conditionally render templates using `*circuit`.
+- **Structural Directive**: Conditionally render templates using `*cktCircuit`.
 - **Route Guard**: Protect routes using `circuitGuard`.
 - **Reactive Service**: `CircuitService` uses Signals for reactive state management.
 - **Context Awareness**: Inject user/session context for advanced flag evaluation.
@@ -105,14 +105,14 @@ export class MyComponent {
 }
 ```
 
-### 2. Structural Directive (\*circuit)
+### 2. Structural Directive (\*cktCircuit)
 
 Conditionally render elements in your template.
 
 ```html
-<div *circuit="'featureA'">Feature A is enabled!</div>
+<div *cktCircuit="'featureA'">Feature A is enabled!</div>
 
-<div *circuit="'featureB'; else fallback">Feature B is enabled!</div>
+<div *cktCircuit="'featureB'; else fallback">Feature B is enabled!</div>
 
 <ng-template #fallback> Feature B is disabled. </ng-template>
 ```
