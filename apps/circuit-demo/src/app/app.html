@@ -1,2 +1,181 @@
-<app-nx-welcome></app-nx-welcome>
+<div class="min-h-screen bg-gray-100 font-sans text-gray-800">
+  <!-- Navigation -->
+  <nav class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center">
+          <div class="flex-shrink-0 flex items-center">
+            <span class="text-xl font-bold text-blue-600"
+              >ngx-circuit Demo</span
+            >
+          </div>
+        </div>
+        <div class="flex items-center space-x-4 ml-auto">
+          <div class="text-sm text-gray-500">
+            Context:
+            <span class="font-mono bg-gray-100 px-1 rounded"
+              >user: user-123</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+    <!-- Welcome Banner (Boolean Flag) -->
+    <div
+      *circuit="'welcomeBanner'"
+      class="bg-blue-600 rounded-lg shadow-lg p-6 mb-8 text-white"
+    >
+      <h2 class="text-2xl font-bold mb-2">Welcome to the Demo!</h2>
+      <p>
+        This banner is controlled by a simple boolean feature flag
+        <code class="bg-blue-700 px-1 rounded">welcomeBanner</code>.
+      </p>
+    </div>
+
+    <!-- Promo Banner (Time-Based Flag) -->
+    <div
+      *circuit="'promoBanner'"
+      class="bg-gradient-to-r from-orange-400 to-pink-500 rounded-lg shadow-lg p-6 mb-8 text-white"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-bold mb-2">Limited Time Promo!</h2>
+          <p>
+            This banner is visible because the current date is within the
+            configured range for
+            <code class="bg-white/20 px-1 rounded">promoBanner</code>.
+          </p>
+        </div>
+        <div class="text-4xl">⏰</div>
+      </div>
+    </div>
+
+    <!-- Feature Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <!-- Beta Feature (Group-Based Flag) -->
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium leading-6 text-gray-900">
+              Beta Dashboard
+            </h3>
+            <span
+              *circuit="'betaFeature'; else disabledBeta"
+              class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+            >
+              Enabled
+            </span>
+            <ng-template #disabledBeta>
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800"
+              >
+                Disabled
+              </span>
+            </ng-template>
+          </div>
+          <p class="text-sm text-gray-500 mb-4">
+            Visible to users in the 'beta-testers' group.
+          </p>
+          <div
+            *circuit="'betaFeature'"
+            class="border border-green-200 bg-green-50 p-4 rounded text-green-700"
+          >
+            You are a beta tester! Here is your exclusive dashboard content.
+          </div>
+        </div>
+      </div>
+
+      <!-- Experimental Feature (Percentage-Based Flag) -->
+      <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-lg font-medium leading-6 text-gray-900">
+              Experimental Feature
+            </h3>
+            <span
+              *circuit="'experimentalFeature'; else disabledExp"
+              class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800"
+            >
+              Enabled (50% Rollout)
+            </span>
+            <ng-template #disabledExp>
+              <span
+                class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800"
+              >
+                Not Enrolled
+              </span>
+            </ng-template>
+          </div>
+          <p class="text-sm text-gray-500 mb-4">
+            Rolled out to 50% of sessions.
+            <button
+              (click)="resetSession()"
+              class="text-blue-600 hover:underline text-xs ml-2"
+            >
+              Reset Session
+            </button>
+          </p>
+          <div
+            *circuit="'experimentalFeature'"
+            class="border border-blue-200 bg-blue-50 p-4 rounded text-blue-700"
+          >
+            You are part of the lucky 50%!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Disabled Feature Example -->
+    <div class="bg-white overflow-hidden shadow rounded-lg mb-8">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-2">
+          Disabled Feature
+        </h3>
+        <p class="text-sm text-gray-500 mb-4">
+          This feature flag is explicitly set to false.
+        </p>
+        <div
+          *circuit="'disabledFeature'; else fallbackContent"
+          class="p-4 bg-green-100"
+        >
+          This should NOT be seen.
+        </div>
+        <ng-template #fallbackContent>
+          <div
+            class="p-4 bg-gray-100 rounded text-gray-600 italic border border-gray-200"
+          >
+            This is fallback content because
+            <code class="text-sm">disabledFeature</code> is off.
+          </div>
+        </ng-template>
+      </div>
+    </div>
+
+    <!-- Guarded Route Example -->
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6 text-center">
+        <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">
+          Protected Route
+        </h3>
+        <p class="text-gray-500 mb-6 max-w-lg mx-auto">
+          The route <code>/protected</code> is guarded by
+          <code>circuitGuard</code> checking for <code>protectedFeature</code>.
+        </p>
+        <a
+          routerLink="/protected"
+          class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          Go to Protected Page
+        </a>
+      </div>
+    </div>
+
+    <div class="mt-8 text-center text-gray-400 text-sm">
+      <p>Powered by ngx-circuit</p>
+    </div>
+  </main>
+</div>
 <router-outlet></router-outlet>

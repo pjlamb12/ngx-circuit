@@ -1,13 +1,19 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcome } from './nx-welcome';
+import { CircuitDirective } from 'ngx-circuit';
 
 @Component({
-	imports: [NxWelcome, RouterModule],
-	selector: 'app-root',
-	templateUrl: './app.html',
-	styleUrl: './app.css',
+  standalone: true,
+  imports: [RouterModule, CircuitDirective],
+  selector: 'app-root',
+  templateUrl: './app.html',
+  styleUrls: ['./app.css'],
 })
 export class App {
-	protected title = 'circuit-demo';
+  title = 'circuit-demo';
+
+  resetSession() {
+    sessionStorage.removeItem('circuit_session_id');
+    window.location.reload();
+  }
 }
