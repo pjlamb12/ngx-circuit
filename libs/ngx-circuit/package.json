@@ -1,6 +1,24 @@
 {
   "name": "ngx-circuit",
   "version": "1.0.0",
+  "description": "A powerful, type-safe feature flag library for Angular applications.",
+  "keywords": [
+    "angular",
+    "feature-flags",
+    "feature-toggles",
+    "ngx",
+    "circuit"
+  ],
+  "author": "pjlamb12",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pjlamb12/ngx-circuit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pjlamb12/ngx-circuit/issues"
+  },
+  "homepage": "https://github.com/pjlamb12/ngx-circuit#readme",
   "peerDependencies": {
     "@angular/common": ">=16.0.0",
     "@angular/core": ">=16.0.0"
