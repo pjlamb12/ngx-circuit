@@ -138,6 +138,40 @@ export const routes: Routes = [
 ];
 ```
 
+## Advanced Usage
+
+### 1. URL Overrides
+
+You can override feature flags via URL query parameters for testing/QA. This must be explicitly enabled.
+
+```typescript
+providers: [provideCircuitConfig(config, { enableUrlOverrides: true })];
+```
+
+Then append `?circuit=flagName:true,otherFlag:false` to your URL.
+
+### 2. Analytics Integration
+
+Track when feature flags are evaluated to support A/B testing analytics.
+
+1. Implement `CircuitTracker`:
+
+```typescript
+@Injectable()
+export class MyAnalyticsTracker implements CircuitTracker {
+  track(feature: string, enabled: boolean): void {
+    console.log(`Feature ${feature} evaluated to ${enabled}`);
+    // Send to Google Analytics, Mixpanel, etc.
+  }
+}
+```
+
+2. Provide it in your app config:
+
+```typescript
+providers: [provideCircuitTracker(MyAnalyticsTracker)];
+```
+
 ## Advanced Flag Types
 
 Define complex rules in your configuration object.

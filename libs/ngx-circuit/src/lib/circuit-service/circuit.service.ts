@@ -19,11 +19,17 @@ import {
   EnvironmentConfig,
   DeviceConfig,
   CompositeConfig,
+  CIRCUIT_OPTIONS,
+  CircuitOptions,
 } from '../circuit.config';
 import {
   CIRCUIT_CONTEXT,
   CircuitContext,
 } from '../circuit-context/circuit.context';
+import {
+  CIRCUIT_TRACKER,
+  CircuitTracker,
+} from '../circuit-analytics/circuit.analytics';
 
 @Injectable({
   providedIn: 'root',
@@ -44,6 +50,12 @@ export class CircuitService {
     @Inject(CIRCUIT_CONTEXT)
     @Optional()
     private context?: CircuitContext | (() => CircuitContext),
+    @Inject(CIRCUIT_OPTIONS)
+    @Optional()
+    private options?: CircuitOptions,
+    @Inject(CIRCUIT_TRACKER)
+    @Optional()
+    private tracker?: CircuitTracker,
   ) {
     this.loadConfig();
   }
@@ -56,7 +68,7 @@ export class CircuitService {
         .get<CircuitConfig>(this.configLoader)
         .pipe(
           tap((config) => {
-            this._flags.set(config);
+            this._flags.set(this.applyOverrides(config));
             this._loading.set(false);
             this._error.set(null);
           }),
@@ -64,14 +76,44 @@ export class CircuitService {
             this._error.set('Failed to load circuit config');
             this._loading.set(false);
             console.error(err);
-            // Return an empty object to keep the stream alive if needed,
-            // though here we are just subscribing once.
+            // Return an empty object to keep the stream alive if needed
             return of({});
           }),
         )
         .subscribe();
     } else {
-      this._flags.set(this.configLoader);
+      this._flags.set(this.applyOverrides(this.configLoader));
+    }
+  }
+
+  private applyOverrides(config: CircuitConfig): CircuitConfig {
+    if (!this.options?.enableUrlOverrides) {
+      return config;
+    }
+
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const circuitParam = searchParams.get('circuit');
+
+      if (!circuitParam) {
+        return config;
+      }
+
+      const overrides = circuitParam.split(',').reduce((acc, part) => {
+        const [key, value] = part.split(':');
+        if (key && value) {
+          acc[key.trim()] = value.trim() === 'true';
+        }
+        return acc;
+      }, {} as CircuitConfig);
+
+      return {
+        ...config,
+        ...overrides,
+      };
+    } catch (e) {
+      console.warn('Failed to parse circuit URL overrides', e);
+      return config;
     }
   }
 
@@ -80,10 +122,13 @@ export class CircuitService {
     const flag = flags[feature];
 
     if (flag === undefined) {
+      this.tracker?.track(feature, false);
       return false;
     }
 
-    return this.checkFlag(flag, feature);
+    const enabled = this.checkFlag(flag, feature);
+    this.tracker?.track(feature, enabled);
+    return enabled;
   }
 
   private checkFlag(flag: CircuitFlagConfig, featureName: string): boolean {

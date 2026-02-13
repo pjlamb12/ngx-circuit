@@ -11,6 +11,7 @@ import {
   CircuitType,
 } from '../circuit.config';
 import { provideCircuitContext } from '../circuit-context/circuit.context';
+import { CIRCUIT_TRACKER } from '../circuit-analytics/circuit.analytics';
 
 describe('CircuitService', () => {
   let service: CircuitService;
@@ -217,6 +218,109 @@ describe('CircuitService', () => {
 
       expect(service.error()).toBe('Failed to load circuit config');
       expect(service.flags()).toEqual({});
+    });
+  });
+
+  describe('with URL overrides', () => {
+    const mockConfig: CircuitConfig = {
+      featureA: true,
+      featureB: false,
+    };
+
+    beforeEach(() => {
+      // Mock window.location
+      const mockLocation = {
+        search: '?circuit=featureA:false,featureB:true',
+      };
+
+      Object.defineProperty(window, 'location', {
+        value: mockLocation,
+        writable: true,
+      });
+
+      TestBed.configureTestingModule({
+        providers: [
+          provideHttpClient(),
+          provideHttpClientTesting(),
+          CircuitService,
+          provideCircuitConfig(mockConfig, { enableUrlOverrides: true }),
+        ],
+      });
+      service = TestBed.inject(CircuitService);
+    });
+
+    it('should override flags from URL', () => {
+      expect(service.isEnabled('featureA')).toBe(false); // Overridden to false
+      expect(service.isEnabled('featureB')).toBe(true); // Overridden to true
+    });
+  });
+
+  describe('without URL overrides enabled', () => {
+    const mockConfig: CircuitConfig = {
+      featureA: true,
+    };
+
+    beforeEach(() => {
+      const mockLocation = {
+        search: '?circuit=featureA:false',
+      };
+
+      Object.defineProperty(window, 'location', {
+        value: mockLocation,
+        writable: true,
+      });
+
+      TestBed.configureTestingModule({
+        providers: [
+          provideHttpClient(),
+          provideHttpClientTesting(),
+          CircuitService,
+          provideCircuitConfig(mockConfig, { enableUrlOverrides: false }), // Defaults to false effectively
+        ],
+      });
+      service = TestBed.inject(CircuitService);
+    });
+
+    it('should NOT override flags from URL if disabled', () => {
+      expect(service.isEnabled('featureA')).toBe(true);
+    });
+  });
+
+  describe('with Analytics Tracker', () => {
+    const mockConfig: CircuitConfig = {
+      featureA: true,
+      featureB: false,
+    };
+
+    // Create a mock tracker
+    const mockTracker = {
+      track: vi.fn(),
+    };
+
+    beforeEach(() => {
+      mockTracker.track.mockClear();
+
+      TestBed.configureTestingModule({
+        providers: [
+          provideHttpClient(),
+          provideHttpClientTesting(),
+          CircuitService,
+          provideCircuitConfig(mockConfig),
+          { provide: CIRCUIT_TRACKER, useValue: mockTracker },
+        ],
+      });
+      service = TestBed.inject(CircuitService);
+    });
+
+    it('should track feature evaluation results', () => {
+      service.isEnabled('featureA');
+      expect(mockTracker.track).toHaveBeenCalledWith('featureA', true);
+
+      service.isEnabled('featureB');
+      expect(mockTracker.track).toHaveBeenCalledWith('featureB', false);
+
+      service.isEnabled('nonExistent');
+      expect(mockTracker.track).toHaveBeenCalledWith('nonExistent', false);
     });
   });
 });
