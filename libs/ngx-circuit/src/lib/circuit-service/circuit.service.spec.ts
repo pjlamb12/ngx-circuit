@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { CircuitService } from './circuit.service';
-import { provideCircuitConfig, CircuitConfig } from './circuit.config';
+import { provideCircuitConfig, CircuitConfig } from '../circuit.config';
 
 describe('CircuitService', () => {
   let service: CircuitService;

@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { catchError, of, tap } from 'rxjs';
-import { CIRCUIT_CONFIG, CircuitConfig, CircuitLoader } from './circuit.config';
+import {
+  CIRCUIT_CONFIG,
+  CircuitConfig,
+  CircuitLoader,
+  CircuitFlagConfig,
+} from '../circuit.config';
 
 @Injectable({
   providedIn: 'root',
