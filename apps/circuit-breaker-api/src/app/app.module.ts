@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { ApiFeatureDatabaseModule } from '@ngx-circuit/api/feature/database';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -9,20 +9,7 @@ import { AppService } from './app.service';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-        entities: [],
-        synchronize: true, // Auto-create tables (dev only)
-      }),
-      inject: [ConfigService],
-    }),
+    ApiFeatureDatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
