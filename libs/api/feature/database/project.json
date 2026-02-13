@@ -1,0 +1,9 @@
+{
+  "name": "api-feature-database",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/feature/database/src",
+  "projectType": "library",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project api-feature-database --web",
+  "targets": {}
+}

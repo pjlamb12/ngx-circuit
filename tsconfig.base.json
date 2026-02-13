@@ -15,7 +15,10 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "ngx-circuit": ["libs/ngx-circuit/src/index.ts"]
+      "ngx-circuit": ["libs/ngx-circuit/src/index.ts"],
+      "@ngx-circuit/api/feature/database": [
+        "libs/api/feature/database/src/index.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]
