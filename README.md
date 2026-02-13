@@ -24,7 +24,7 @@ npm install ngx-circuit
 
 ### 1. Providing Configuration
 
-You can provide the configuration using `provideCircuitConfig` in your application config.
+You can provide the configuration using `provideCircuitConfig` in your application config. The configuration can be a simple **static object** (ideal for key-value pairs or demo purposes) or a **URL** to load the configuration from a JSON file or API endpoint.
 
 **Option A: Static Object**
 
