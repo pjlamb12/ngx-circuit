@@ -1,32 +1,28 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LoginComponent } from './auth';
+import { RegisterComponent } from './register';
 import { AuthService } from '@circuit-breaker/data-access/auth';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
+describe('RegisterComponent', () => {
+  let component: RegisterComponent;
+  let fixture: ComponentFixture<RegisterComponent>;
 
   const mockAuthService = {
-    login: jest.fn().mockReturnValue(of({})),
-  };
-
-  const mockRouter = {
-    navigate: jest.fn(),
+    register: jest.fn().mockReturnValue(of({})),
   };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, NoopAnimationsModule],
+      imports: [RegisterComponent, NoopAnimationsModule],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
         provideRouter([]),
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LoginComponent);
+    fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -35,7 +31,7 @@ describe('LoginComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should define loginForm', () => {
-    expect(component.loginForm).toBeDefined();
+  it('should define registerForm', () => {
+    expect(component.registerForm).toBeDefined();
   });
 });
