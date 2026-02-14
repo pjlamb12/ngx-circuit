@@ -30,6 +30,15 @@
       ],
       "@circuit-breaker/feature/auth": [
         "libs/circuit-breaker/feature/auth/src/index.ts"
+      ],
+      "@circuit-breaker/api/feature/applications": [
+        "libs/api/feature/applications/src/index.ts"
+      ],
+      "@circuit-breaker/feature/dashboard": [
+        "libs/circuit-breaker/feature/dashboard/src/index.ts"
+      ],
+      "@circuit-breaker/data-access/applications": [
+        "libs/circuit-breaker/data-access/applications/src/index.ts"
       ]
     }
   },
