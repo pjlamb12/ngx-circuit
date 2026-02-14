@@ -1,0 +1,8 @@
+{
+  "name": "@circuit-breaker/shared/util/models",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "dependencies": {},
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts"
+}
