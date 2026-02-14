@@ -4,11 +4,11 @@ import {
   RegisterComponent,
 } from '@circuit-breaker/feature/auth';
 import { authGuard } from '@circuit-breaker/data-access/auth';
-import { NxWelcome } from './nx-welcome';
+import { DashboardComponent } from '@circuit-breaker/feature/dashboard';
 
 export const appRoutes: Route[] = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '', component: NxWelcome, canActivate: [authGuard] },
+  { path: '', component: DashboardComponent, canActivate: [authGuard] },
   { path: '**', redirectTo: '' },
 ];
