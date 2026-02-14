@@ -3,13 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RuntimeConfigLoaderService } from 'runtime-config-loader';
 
-export interface Application {
-  id: string;
-  name: string;
-  description?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { Application } from '@circuit-breaker/shared/util/models';
 
 @Injectable({
   providedIn: 'root',

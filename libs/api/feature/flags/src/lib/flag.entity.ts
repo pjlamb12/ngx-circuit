@@ -9,8 +9,10 @@ import {
 } from 'typeorm';
 import { Application } from '@circuit-breaker/api/feature/applications';
 
+import { Flag as IFlag } from '@circuit-breaker/shared/util/models';
+
 @Entity()
-export class Flag {
+export class Flag implements IFlag {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 

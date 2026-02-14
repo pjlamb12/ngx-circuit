@@ -7,8 +7,10 @@ import {
   OneToMany,
 } from 'typeorm';
 
+import { Application as IApplication } from '@circuit-breaker/shared/util/models';
+
 @Entity()
-export class Application {
+export class Application implements IApplication {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 

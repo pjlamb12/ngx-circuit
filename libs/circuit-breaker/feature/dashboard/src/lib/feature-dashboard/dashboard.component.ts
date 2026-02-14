@@ -2,10 +2,8 @@ import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import {
-  ApplicationsService,
-  Application,
-} from '@circuit-breaker/data-access/applications';
+import { ApplicationsService } from '@circuit-breaker/data-access/applications';
+import { Application } from '@circuit-breaker/shared/util/models';
 
 @Component({
   selector: 'lib-dashboard',
