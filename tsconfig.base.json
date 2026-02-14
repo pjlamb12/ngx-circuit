@@ -18,6 +18,18 @@
       "ngx-circuit": ["libs/ngx-circuit/src/index.ts"],
       "@ngx-circuit/api/feature/database": [
         "libs/api/feature/database/src/index.ts"
+      ],
+      "@circuit-breaker/api/feature/auth": [
+        "libs/api/feature/auth/src/index.ts"
+      ],
+      "@circuit-breaker/api/data-access/user": [
+        "libs/api/data-access/user/src/index.ts"
+      ],
+      "@circuit-breaker/data-access/auth": [
+        "libs/circuit-breaker/data-access/auth/src/index.ts"
+      ],
+      "@circuit-breaker/feature/auth": [
+        "libs/circuit-breaker/feature/auth/src/index.ts"
       ]
     }
   },
