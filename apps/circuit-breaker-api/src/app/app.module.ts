@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 
 import { ApiFeatureAuthModule } from '@circuit-breaker/api/feature/auth';
 import { ApplicationsModule } from '@circuit-breaker/api/feature/applications';
+import { ApiFeatureFlagsModule } from '@circuit-breaker/api/feature/flags';
 
 @Module({
   imports: [
@@ -14,7 +15,9 @@ import { ApplicationsModule } from '@circuit-breaker/api/feature/applications';
     }),
     ApiFeatureDatabaseModule,
     ApiFeatureAuthModule,
+    ApiFeatureAuthModule,
     ApplicationsModule,
+    ApiFeatureFlagsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

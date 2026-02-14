@@ -9,6 +9,18 @@ import { DashboardComponent } from '@circuit-breaker/feature/dashboard';
 export const appRoutes: Route[] = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: '', component: DashboardComponent, canActivate: [authGuard] },
+  {
+    path: '',
+    component: DashboardComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'applications/:id',
+    loadComponent: () =>
+      import('@circuit-breaker/feature/application-detail').then(
+        (m) => m.ApplicationDetailComponent,
+      ),
+    canActivate: [authGuard],
+  },
   { path: '**', redirectTo: '' },
 ];

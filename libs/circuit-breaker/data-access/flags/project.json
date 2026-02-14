@@ -1,0 +1,21 @@
+{
+  "name": "data-access-flags",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/circuit-breaker/data-access/flags/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["scope:circuit-breaker", "type:data-access"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/circuit-breaker/data-access/flags/jest.config.cts",
+        "tsConfig": "libs/circuit-breaker/data-access/flags/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}
