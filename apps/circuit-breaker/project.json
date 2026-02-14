@@ -63,7 +63,9 @@
     },
     "test": {
       "executor": "@angular/build:unit-test",
-      "options": {}
+      "options": {
+        "watch": false
+      }
     },
     "serve-static": {
       "continuous": true,
