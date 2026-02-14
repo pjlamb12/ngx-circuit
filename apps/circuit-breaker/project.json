@@ -17,6 +17,11 @@
           {
             "glob": "**/*",
             "input": "apps/circuit-breaker/public"
+          },
+          {
+            "glob": "**/*",
+            "input": "apps/circuit-breaker/assets",
+            "output": "assets"
           }
         ],
         "styles": ["apps/circuit-breaker/src/styles.css"]

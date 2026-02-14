@@ -24,6 +24,12 @@
       ],
       "@circuit-breaker/api/data-access/user": [
         "libs/api/data-access/user/src/index.ts"
+      ],
+      "@circuit-breaker/data-access/auth": [
+        "libs/circuit-breaker/data-access/auth/src/index.ts"
+      ],
+      "@circuit-breaker/feature/auth": [
+        "libs/circuit-breaker/feature/auth/src/index.ts"
       ]
     }
   },

@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from '@circuit-breaker/api/feature/auth';
 import { AppService } from './app.service';
@@ -19,6 +26,11 @@ export class AppController {
   @Post('auth/login')
   async login(@Request() req: any) {
     return this.authService.login(req.user);
+  }
+
+  @Post('auth/register')
+  async register(@Body() body: any) {
+    return this.authService.register(body);
   }
 
   @UseGuards(AuthGuard('jwt'))
