@@ -22,4 +22,10 @@ describe('App', () => {
     // @ts-ignore access protected property
     expect(app.title).toEqual('circuit-breaker');
   });
+
+  it('should render router-outlet', () => {
+    const fixture = TestBed.createComponent(App);
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
+  });
 });
