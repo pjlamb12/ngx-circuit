@@ -39,6 +39,15 @@
       ],
       "@circuit-breaker/data-access/applications": [
         "libs/circuit-breaker/data-access/applications/src/index.ts"
+      ],
+      "@circuit-breaker/api/feature/flags": [
+        "libs/api/feature/flags/src/index.ts"
+      ],
+      "@circuit-breaker/data-access/flags": [
+        "libs/circuit-breaker/data-access/flags/src/index.ts"
+      ],
+      "@circuit-breaker/feature/application-detail": [
+        "libs/circuit-breaker/feature/application-detail/src/index.ts"
       ]
     }
   },

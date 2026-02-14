@@ -26,6 +26,10 @@ export class ApplicationsService {
     return this.http.get<Application[]>(`${this.apiBaseUrl}/applications`);
   }
 
+  getApplication(id: string): Observable<Application> {
+    return this.http.get<Application>(`${this.apiBaseUrl}/applications/${id}`);
+  }
+
   createApplication(
     application: Partial<Application>,
   ): Observable<Application> {

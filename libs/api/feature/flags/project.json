@@ -1,0 +1,9 @@
+{
+  "name": "flags",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/feature/flags/src",
+  "projectType": "library",
+  "tags": ["scope:api", "type:feature"],
+  "// targets": "to see all targets run: nx show project flags --web",
+  "targets": {}
+}
