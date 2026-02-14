@@ -19,7 +19,7 @@ describe('App', () => {
   it(`should have as title 'circuit-breaker'`, () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
-    // @ts-ignore access protected property
+    // @ts-expect-error access protected property
     expect(app.title).toEqual('circuit-breaker');
   });
 
