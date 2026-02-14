@@ -48,6 +48,9 @@
       ],
       "@circuit-breaker/feature/application-detail": [
         "libs/circuit-breaker/feature/application-detail/src/index.ts"
+      ],
+      "@circuit-breaker/shared/util/models": [
+        "libs/shared/util/models/src/index.ts"
       ]
     }
   },

@@ -7,11 +7,9 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import {
-  ApplicationsService,
-  Application,
-} from '@circuit-breaker/data-access/applications';
-import { FlagsService, Flag } from '@circuit-breaker/data-access/flags';
+import { ApplicationsService } from '@circuit-breaker/data-access/applications';
+import { FlagsService } from '@circuit-breaker/data-access/flags';
+import { Application, Flag } from '@circuit-breaker/shared/util/models';
 import { switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
