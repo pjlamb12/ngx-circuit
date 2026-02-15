@@ -1,0 +1,8 @@
+{
+  "name": "client",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/feature/client/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {}
+}

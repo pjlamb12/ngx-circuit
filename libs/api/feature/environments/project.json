@@ -1,0 +1,8 @@
+{
+  "name": "environments",
+  "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/api/feature/environments/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {}
+}

@@ -1,5 +1,6 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { EnvironmentsListComponent } from '@circuit-breaker/feature/environments';
 import { ActivatedRoute } from '@angular/router';
 import {
   FormBuilder,
@@ -16,7 +17,7 @@ import { of } from 'rxjs';
 @Component({
   selector: 'circuit-breaker-application-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, EnvironmentsListComponent],
   templateUrl: './application-detail.component.html',
 })
 export class ApplicationDetailComponent implements OnInit {
@@ -30,6 +31,8 @@ export class ApplicationDetailComponent implements OnInit {
   isModalOpen = signal(false);
   isSubmitting = signal(false);
   editingFlag = signal<Flag | null>(null);
+
+  currentTab = signal<'flags' | 'environments'>('flags');
 
   flagForm: FormGroup = this.fb.group({
     key: ['', Validators.required],
