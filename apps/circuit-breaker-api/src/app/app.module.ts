@@ -7,6 +7,8 @@ import { AppService } from './app.service';
 import { ApiFeatureAuthModule } from '@circuit-breaker/api/feature/auth';
 import { ApplicationsModule } from '@circuit-breaker/api/feature/applications';
 import { ApiFeatureFlagsModule } from '@circuit-breaker/api/feature/flags';
+import { EnvironmentsModule as ApiEnvironmentsModule } from '@circuit-breaker/api/feature/environments';
+import { ClientModule as ApiClientModule } from '@circuit-breaker/api/feature/client';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { ApiFeatureFlagsModule } from '@circuit-breaker/api/feature/flags';
     ApiFeatureAuthModule,
     ApplicationsModule,
     ApiFeatureFlagsModule,
+    ApiEnvironmentsModule,
+    ApiClientModule,
   ],
   controllers: [AppController],
   providers: [AppService],

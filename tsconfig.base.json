@@ -51,6 +51,18 @@
       ],
       "@circuit-breaker/shared/util/models": [
         "libs/shared/util/models/src/index.ts"
+      ],
+      "@circuit-breaker/api/feature/environments": [
+        "libs/api/feature/environments/src/index.ts"
+      ],
+      "@circuit-breaker/api/feature/client": [
+        "libs/api/feature/client/src/index.ts"
+      ],
+      "@circuit-breaker/data-access/environments": [
+        "libs/circuit-breaker/data-access/environments/src/index.ts"
+      ],
+      "@circuit-breaker/feature/environments": [
+        "libs/circuit-breaker/feature/environments/src/index.ts"
       ]
     }
   },
