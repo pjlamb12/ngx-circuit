@@ -37,8 +37,14 @@ describe('ClientService', () => {
       } as unknown as ApiKey;
 
       const mockFlags = [
-        { key: 'featureA', defaultValue: true },
-        { key: 'featureB', defaultValue: false },
+        { key: 'featureA', defaultValue: true, type: 'BOOLEAN' },
+        { key: 'featureB', defaultValue: false, type: 'BOOLEAN' },
+        {
+          key: 'featureComplex',
+          defaultValue: false,
+          type: 'PERCENTAGE',
+          controlValue: { type: 'PERCENTAGE', percentage: 50 },
+        },
       ];
 
       mockFlagsService.findAll.mockResolvedValue(mockFlags);
@@ -48,6 +54,7 @@ describe('ClientService', () => {
       expect(result).toEqual({
         featureA: true,
         featureB: false,
+        featureComplex: { type: 'PERCENTAGE', percentage: 50 },
       });
       expect(mockFlagsService.findAll).toHaveBeenCalledWith('app-id');
     });

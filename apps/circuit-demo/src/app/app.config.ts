@@ -5,34 +5,15 @@ import {
 import { provideRouter } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  provideCircuitConfig,
-  provideCircuitContext,
-  CircuitType,
-} from 'ngx-circuit';
+import { provideRemoteCircuitConfig, provideCircuitContext } from 'ngx-circuit';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(appRoutes),
     provideHttpClient(),
-    provideCircuitConfig({
-      welcomeBanner: true,
-      promoBanner: {
-        type: CircuitType.TimeBased,
-        startDate: '2023-01-01',
-        endDate: '2025-12-31',
-      },
-      betaFeature: {
-        type: CircuitType.Group,
-        groups: ['beta-testers'],
-      },
-      experimentalFeature: {
-        type: CircuitType.Percentage,
-        percentage: 50,
-      },
-      protectedFeature: true,
-      disabledFeature: false,
+    provideRemoteCircuitConfig('http://localhost:3000/api/client/config', {
+      apiKey: 'ckt_715f0816e9722dd0109005381db4e6e0',
     }),
     provideCircuitContext({
       userId: 'user-123',

@@ -16,7 +16,17 @@ export class ClientService {
     // Configuring just defaultValue for now as per plan
     const config: CircuitConfig = {};
     flags.forEach((flag: Flag) => {
-      config[flag.key] = flag.defaultValue;
+      if (flag.type === 'BOOLEAN') {
+        config[flag.key] = flag.defaultValue;
+      } else if (flag.controlValue) {
+        config[flag.key] = {
+          type: flag.type,
+          ...(flag.controlValue as object),
+        } as any;
+      } else {
+        // Fallback for non-boolean flags without control value
+        config[flag.key] = flag.defaultValue;
+      }
     });
 
     return config;

@@ -61,6 +61,7 @@ export type CircuitLoader = string | CircuitConfig;
 
 export interface CircuitOptions {
   enableUrlOverrides?: boolean;
+  apiKey?: string;
 }
 
 export const CIRCUIT_CONFIG = new InjectionToken<CircuitLoader>(
@@ -72,13 +73,29 @@ export const CIRCUIT_OPTIONS = new InjectionToken<CircuitOptions>(
 );
 
 export function provideCircuitConfig(
-  config: CircuitLoader,
+  config: CircuitConfig,
   options: CircuitOptions = {},
 ): EnvironmentProviders {
   return makeEnvironmentProviders([
     {
       provide: CIRCUIT_CONFIG,
       useValue: config,
+    },
+    {
+      provide: CIRCUIT_OPTIONS,
+      useValue: options,
+    },
+  ]);
+}
+
+export function provideRemoteCircuitConfig(
+  url: string,
+  options: CircuitOptions = {},
+): EnvironmentProviders {
+  return makeEnvironmentProviders([
+    {
+      provide: CIRCUIT_CONFIG,
+      useValue: url,
     },
     {
       provide: CIRCUIT_OPTIONS,

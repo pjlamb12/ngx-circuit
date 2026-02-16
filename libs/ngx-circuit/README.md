@@ -42,19 +42,21 @@ export const appConfig: ApplicationConfig = {
 };
 ```
 
-**Option B: HTTP endpoint**
+**Option B: HTTP endpoint (Remote Configuration)**
 
 Load configuration from a remote JSON file or API.
 
 ```typescript
 import { ApplicationConfig } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
-import { provideCircuitConfig } from 'ngx-circuit';
+import { provideRemoteCircuitConfig } from 'ngx-circuit';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(),
-    provideCircuitConfig('/api/flags'), // URL to fetch config
+    provideRemoteCircuitConfig('https://api.example.com/flags', {
+      apiKey: 'your-api-key', // Optional: value sent in x-api-key header
+    }),
   ],
 };
 ```
