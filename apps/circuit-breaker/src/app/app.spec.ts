@@ -1,13 +1,45 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { provideRouter } from '@angular/router';
+import { RuntimeConfigLoaderService } from 'runtime-config-loader';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter([])],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: RuntimeConfigLoaderService,
+          useValue: {
+            getConfig: () => ({
+              apiBaseUrl: 'http://localhost:3000',
+            }),
+          },
+        },
+      ],
     }).compileComponents();
+
+    const mockLocalStorage = {
+      getItem: () => null,
+      setItem: () => {
+        // mock
+      },
+      removeItem: () => {
+        // mock
+      },
+      clear: () => {
+        // mock
+      },
+    };
+
+    Object.defineProperty(window, 'localStorage', {
+      value: mockLocalStorage,
+    });
   });
 
   it('should create the app', () => {
