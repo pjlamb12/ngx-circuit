@@ -321,20 +321,166 @@
           <div class="mb-4">
             <label
               class="block text-gray-700 text-sm font-bold mb-2"
-              for="compositeRules"
+              for="compositeConditions"
             >
-              Composite Rules (JSON)
+              Composite Conditions (OR logic)
             </label>
-            <textarea
-              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline font-mono text-sm"
-              id="compositeRules"
-              formControlName="compositeRules"
-              placeholder='[{"type": "PERCENTAGE", "percentage": 50}]'
-              rows="5"
-            ></textarea>
-            <p class="text-xs text-gray-500 mt-1">
-              Enter a JSON array of conditions.
-            </p>
+            <div formArrayName="compositeConditions">
+              @for (
+                condition of compositeConditions.controls;
+                track $index;
+                let i = $index
+              ) {
+                <div
+                  [formGroupName]="i"
+                  class="border rounded p-3 mb-2 bg-gray-50 relative"
+                >
+                  <button
+                    type="button"
+                    (click)="removeCompositeCondition(i)"
+                    class="absolute top-2 right-2 text-red-500 hover:text-red-700"
+                    title="Remove Condition"
+                  >
+                    &times;
+                  </button>
+
+                  <!-- Condition Type Selector -->
+                  <div class="mb-2">
+                    <label
+                      class="block text-gray-700 text-xs font-bold mb-1"
+                      [for]="'type-' + i"
+                    >
+                      Condition Type
+                    </label>
+                    <select
+                      [id]="'type-' + i"
+                      formControlName="type"
+                      class="shadow border rounded w-full py-1 px-2 text-gray-700 text-sm leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                      @for (type of compositeConditionTypes; track type) {
+                        <option [value]="type">{{ type }}</option>
+                      }
+                    </select>
+                  </div>
+
+                  <!-- Dynamic Inputs based on Condition Type -->
+                  @let conditionType = condition.get('type')?.value;
+
+                  @if (conditionType === CircuitType.Percentage) {
+                    <div class="mb-2">
+                      <label
+                        class="block text-gray-700 text-xs font-bold mb-1"
+                        [for]="'percentage-' + i"
+                      >
+                        Percentage (0-100)
+                      </label>
+                      <input
+                        [id]="'percentage-' + i"
+                        type="number"
+                        min="0"
+                        max="100"
+                        formControlName="percentage"
+                        class="shadow border rounded w-full py-1 px-2 text-gray-700 text-sm"
+                      />
+                    </div>
+                  }
+
+                  @if (conditionType === CircuitType.TimeBased) {
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                      <div>
+                        <label
+                          class="block text-gray-700 text-xs font-bold mb-1"
+                          [for]="'startDate-' + i"
+                        >
+                          Start Date
+                        </label>
+                        <input
+                          [id]="'startDate-' + i"
+                          type="datetime-local"
+                          formControlName="startDate"
+                          class="shadow border rounded w-full py-1 px-2 text-gray-700 text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label
+                          class="block text-gray-700 text-xs font-bold mb-1"
+                          [for]="'endDate-' + i"
+                        >
+                          End Date (Optional)
+                        </label>
+                        <input
+                          [id]="'endDate-' + i"
+                          type="datetime-local"
+                          formControlName="endDate"
+                          class="shadow border rounded w-full py-1 px-2 text-gray-700 text-sm"
+                        />
+                      </div>
+                    </div>
+                  }
+
+                  @if (conditionType === CircuitType.Group) {
+                    <div class="mb-2">
+                      <label
+                        class="block text-gray-700 text-xs font-bold mb-1"
+                        [for]="'targetGroups-' + i"
+                      >
+                        Target Groups
+                      </label>
+                      <input
+                        [id]="'targetGroups-' + i"
+                        type="text"
+                        formControlName="targetGroups"
+                        placeholder="admin, beta"
+                        class="shadow border rounded w-full py-1 px-2 text-gray-700 text-sm"
+                      />
+                    </div>
+                  }
+
+                  @if (conditionType === CircuitType.Environment) {
+                    <div class="mb-2">
+                      <label
+                        class="block text-gray-700 text-xs font-bold mb-1"
+                        [for]="'targetEnvironments-' + i"
+                      >
+                        Target Environments
+                      </label>
+                      <input
+                        [id]="'targetEnvironments-' + i"
+                        type="text"
+                        formControlName="targetEnvironments"
+                        placeholder="prod, dev"
+                        class="shadow border rounded w-full py-1 px-2 text-gray-700 text-sm"
+                      />
+                    </div>
+                  }
+
+                  @if (conditionType === CircuitType.Device) {
+                    <div class="mb-2">
+                      <label
+                        class="block text-gray-700 text-xs font-bold mb-1"
+                        [for]="'targetDevices-' + i"
+                      >
+                        Target Devices
+                      </label>
+                      <input
+                        [id]="'targetDevices-' + i"
+                        type="text"
+                        formControlName="targetDevices"
+                        placeholder="device-1, device-2"
+                        class="shadow border rounded w-full py-1 px-2 text-gray-700 text-sm"
+                      />
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+            <button
+              type="button"
+              (click)="addCompositeCondition()"
+              class="bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold py-1 px-3 rounded text-sm w-full border border-blue-300 border-dashed"
+            >
+              + Add Condition
+            </button>
           </div>
         }
 
