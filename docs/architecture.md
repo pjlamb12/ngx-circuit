@@ -61,3 +61,12 @@ The frontend is an Admin Dashboard for developers and product managers.
 - **Environment**: Deployment targets (e.g., "Production", "Staging").
   - Has many **ApiKeys**.
 - **ApiKey**: Secure keys used by SDKs to authenticate with the Client API.
+
+## Deployment Architecture
+
+Both the **Backend API** and **Frontend Dashboard** are designed to be deployed as containerized applications.
+
+- The **API** is a stateless Node.js service that connects to a **PostgreSQL** database.
+- The **Frontend** compiles to static assets that can be served by any web server or CDN.
+
+For detailed deployment instructions, see the **[Self-Hosting Guide](./self-hosting.md)**.

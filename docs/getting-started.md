@@ -54,3 +54,7 @@ nx run-many --target=serve --projects=circuit-breaker,circuit-breaker-api
 2.  You will be redirected to the **Login** page.
 3.  Click **"Register"** to create a new admin account.
 4.  Once registered, log in to access the Dashboard.
+
+## Production Deployment
+
+This guide covers local development setup. For deploying the Circuit Breaker applications to a production environment, please refer to the **[Self-Hosting Guide](./self-hosting.md)**.
