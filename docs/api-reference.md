@@ -49,7 +49,7 @@ _(Coming Soon)_
 
 We are currently building SDKs for:
 
-- Angular (`ngx-circuit-sdk`)
+- Angular (`ngx-circuit`)
 - Node.js
 - React
 
