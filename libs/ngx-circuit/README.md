@@ -227,6 +227,17 @@ const config = {
 };
 ```
 
+## Management Dashboard
+
+This repository also includes a full-stack **Circuit Breaker Management Dashboard** that you can self-host to manage your feature flags, environments, and projects.
+
+The dashboard consists of:
+
+- **Frontend**: An Angular application for managing flags.
+- **Backend API**: A NestJS application for storing flag configurations.
+
+For detailed instructions on how to run, build, and deploy the management dashboard, please refer to the [GitHub README](https://github.com/pjlamb12/ngx-circuit/blob/main/README.md#circuit-breaker-management-dashboard).
+
 ## License
 
 MIT

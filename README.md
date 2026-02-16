@@ -227,6 +227,76 @@ const config = {
 };
 ```
 
+## Circuit Breaker Management Dashboard
+
+This repository includes a full-stack application for managing your feature flags (`circuit-breaker` frontend and `circuit-breaker-api` backend). You can self-host these applications to provide a management interface for your feature flags.
+
+### 1. Backend (`circuit-breaker-api`)
+
+A NestJS application that provides the API for managing flags, environments, and projects.
+
+**Requirements:**
+
+- PostgreSQL Database
+
+**Environment Variables:**
+Create a `.env` file or set the following environment variables:
+
+```bash
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=password
+DB_NAME=circuit_breaker
+```
+
+**Running the API:**
+
+```bash
+# Development
+npx nx serve circuit-breaker-api
+
+# Production Build
+npx nx build circuit-breaker-api
+
+# Run Production Build
+node dist/apps/circuit-breaker-api/main.js
+```
+
+### 2. Frontend (`circuit-breaker`)
+
+An Angular application that provides the UI for the dashboard.
+
+**Configuration:**
+The frontend loads its configuration from `assets/config.json`. You can modify this file to point to your API instance.
+
+```json
+{
+  "apiBaseUrl": "http://localhost:3000/api"
+}
+```
+
+**Running the Frontend:**
+
+```bash
+# Development
+npx nx serve circuit-breaker
+
+# Production Build
+npx nx build circuit-breaker
+```
+
+**Deployment:**
+The build artifacts will be stored in the `dist/apps/circuit-breaker` directory. You can serve the static files from `dist/apps/circuit-breaker/browser` using any web server (e.g., Nginx, Apache, or a static file hosting service).
+
+### 3. Docker Support
+
+A `docker-compose.yml` file is included to quickly spin up a PostgreSQL database for local development.
+
+```bash
+docker-compose up -d
+```
+
 ## License
 
 MIT

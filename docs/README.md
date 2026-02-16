@@ -9,6 +9,7 @@ Circuit Breaker is a full-stack feature flag management platform that allows you
 - **[Getting Started](./getting-started.md)**: Setup, installation, and running the application locally.
 - **[Architecture Overview](./architecture.md)**: High-level system design and technology stack.
 - **[User Guide](./user-guide.md)**: How to use the Admin Dashboard to manage Apps, Flags, and Environments.
+- **[Self-Hosting Guide](./self-hosting.md)**: Detailed instructions for deploying the applications to production.
 - **[API & SDK Reference](./api-reference.md)**: Integrating Circuit Breaker with your applications.
 
 ## 🚀 Quick Start

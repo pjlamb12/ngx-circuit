@@ -1,6 +1,6 @@
 {
   "name": "ngx-circuit",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A powerful, type-safe feature flag library for Angular applications.",
   "keywords": [
     "angular",
