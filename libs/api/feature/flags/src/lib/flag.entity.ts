@@ -9,7 +9,11 @@ import {
 } from 'typeorm';
 import { Application } from '@circuit-breaker/api/feature/applications';
 
-import { Flag as IFlag } from '@circuit-breaker/shared/util/models';
+import {
+  Flag as IFlag,
+  CircuitType,
+  CircuitFlagConfig,
+} from '@circuit-breaker/shared/util/models';
 
 @Entity()
 export class Flag implements IFlag {
@@ -24,6 +28,16 @@ export class Flag implements IFlag {
 
   @Column({ default: false })
   defaultValue!: boolean;
+
+  @Column({
+    type: 'enum',
+    enum: CircuitType,
+    default: CircuitType.Boolean,
+  })
+  type!: CircuitType;
+
+  @Column({ type: 'jsonb', nullable: true })
+  controlValue?: CircuitFlagConfig;
 
   @ManyToOne(() => Application, (application) => application.id, {
     onDelete: 'CASCADE',

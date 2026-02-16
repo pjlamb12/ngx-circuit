@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EnvironmentsListComponent } from '@circuit-breaker/feature/environments';
 import { ActivatedRoute } from '@angular/router';
@@ -7,10 +7,15 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
+  FormControl,
 } from '@angular/forms';
 import { ApplicationsService } from '@circuit-breaker/data-access/applications';
 import { FlagsService } from '@circuit-breaker/data-access/flags';
-import { Application, Flag } from '@circuit-breaker/shared/util/models';
+import {
+  Application,
+  Flag,
+  CircuitType,
+} from '@circuit-breaker/shared/util/models';
 import { switchMap, tap } from 'rxjs/operators';
 import { of } from 'rxjs';
 
@@ -34,10 +39,19 @@ export class ApplicationDetailComponent implements OnInit {
 
   currentTab = signal<'flags' | 'environments'>('flags');
 
+  CircuitType = CircuitType;
+  flagTypes = Object.values(CircuitType);
+
   flagForm: FormGroup = this.fb.group({
     key: ['', Validators.required],
     description: [''],
-    defaultValue: [false],
+    type: [CircuitType.Boolean, Validators.required],
+    defaultValue: [false], // Acts as 'enabled' for boolean, or fallback for others
+    // Dynamic controls will be added/managed based on type
+    percentage: [50, [Validators.min(0), Validators.max(100)]],
+    startDate: [''],
+    endDate: [''],
+    targetGroups: [''],
   });
 
   ngOnInit() {
@@ -67,16 +81,27 @@ export class ApplicationDetailComponent implements OnInit {
 
   openCreateModal() {
     this.editingFlag.set(null);
-    this.flagForm.reset({ defaultValue: false });
+    this.flagForm.reset({
+      type: CircuitType.Boolean,
+      defaultValue: false,
+      percentage: 50,
+    });
     this.isModalOpen.set(true);
   }
 
   openEditModal(flag: Flag) {
     this.editingFlag.set(flag);
+    const config = flag.controlValue as any; // Type assertion for simplification
+
     this.flagForm.patchValue({
       key: flag.key,
       description: flag.description,
+      type: flag.type || CircuitType.Boolean,
       defaultValue: flag.defaultValue,
+      percentage: config?.percentage ?? 50,
+      startDate: config?.startDate ?? '',
+      endDate: config?.endDate ?? '',
+      targetGroups: config?.groups ? config.groups.join(', ') : '',
     });
     this.isModalOpen.set(true);
   }
@@ -95,10 +120,40 @@ export class ApplicationDetailComponent implements OnInit {
     const formValue = this.flagForm.value;
     const appId = app.id;
 
+    // Construct the payload based on type
+    const payload: Partial<Flag> = {
+      key: formValue.key,
+      description: formValue.description,
+      type: formValue.type,
+      defaultValue: formValue.defaultValue,
+      applicationId: appId,
+    };
+
+    if (formValue.type === CircuitType.Percentage) {
+      payload.controlValue = {
+        type: CircuitType.Percentage,
+        percentage: formValue.percentage,
+      };
+    } else if (formValue.type === CircuitType.TimeBased) {
+      payload.controlValue = {
+        type: CircuitType.TimeBased,
+        startDate: formValue.startDate,
+        endDate: formValue.endDate || undefined,
+      };
+    } else if (formValue.type === CircuitType.Group) {
+      payload.controlValue = {
+        type: CircuitType.Group,
+        groups: formValue.targetGroups
+          .split(',')
+          .map((g: string) => g.trim())
+          .filter((g: string) => g),
+      };
+    }
+
     const editingFlag = this.editingFlag();
     if (editingFlag) {
       const id = editingFlag.id;
-      this.flagsService.updateFlag(id, formValue).subscribe({
+      this.flagsService.updateFlag(id, payload).subscribe({
         next: () => {
           this.loadFlags(appId);
           this.closeModal();
@@ -107,16 +162,14 @@ export class ApplicationDetailComponent implements OnInit {
         error: () => this.isSubmitting.set(false),
       });
     } else {
-      this.flagsService
-        .createFlag({ ...formValue, applicationId: appId })
-        .subscribe({
-          next: () => {
-            this.loadFlags(appId);
-            this.closeModal();
-            this.isSubmitting.set(false);
-          },
-          error: () => this.isSubmitting.set(false),
-        });
+      this.flagsService.createFlag(payload as any).subscribe({
+        next: () => {
+          this.loadFlags(appId);
+          this.closeModal();
+          this.isSubmitting.set(false);
+        },
+        error: () => this.isSubmitting.set(false),
+      });
     }
   }
 
