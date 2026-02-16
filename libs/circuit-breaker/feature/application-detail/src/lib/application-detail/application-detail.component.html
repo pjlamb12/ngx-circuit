@@ -281,6 +281,63 @@
           </div>
         }
 
+        @if (flagForm.get('type')?.value === CircuitType.Environment) {
+          <div class="mb-4">
+            <label
+              class="block text-gray-700 text-sm font-bold mb-2"
+              for="targetEnvironments"
+            >
+              Target Environments (comma separated keys)
+            </label>
+            <input
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="targetEnvironments"
+              type="text"
+              formControlName="targetEnvironments"
+              placeholder="prod, dev, staging"
+            />
+          </div>
+        }
+
+        @if (flagForm.get('type')?.value === CircuitType.Device) {
+          <div class="mb-4">
+            <label
+              class="block text-gray-700 text-sm font-bold mb-2"
+              for="targetDevices"
+            >
+              Target Devices (comma separated IDs)
+            </label>
+            <input
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="targetDevices"
+              type="text"
+              formControlName="targetDevices"
+              placeholder="device-id-1, device-id-2"
+            />
+          </div>
+        }
+
+        @if (flagForm.get('type')?.value === CircuitType.Composite) {
+          <div class="mb-4">
+            <label
+              class="block text-gray-700 text-sm font-bold mb-2"
+              for="compositeRules"
+            >
+              Composite Rules (JSON)
+            </label>
+            <textarea
+              class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline font-mono text-sm"
+              id="compositeRules"
+              formControlName="compositeRules"
+              placeholder='[{"type": "PERCENTAGE", "percentage": 50}]'
+              rows="5"
+            ></textarea>
+            <p class="text-xs text-gray-500 mt-1">
+              Enter a JSON array of conditions.
+            </p>
+          </div>
+        }
+
         <div class="mb-6">
           <label class="flex items-center">
             <input

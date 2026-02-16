@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, computed } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EnvironmentsListComponent } from '@circuit-breaker/feature/environments';
 import { ActivatedRoute } from '@angular/router';
@@ -7,7 +7,6 @@ import {
   FormGroup,
   ReactiveFormsModule,
   Validators,
-  FormControl,
 } from '@angular/forms';
 import { ApplicationsService } from '@circuit-breaker/data-access/applications';
 import { FlagsService } from '@circuit-breaker/data-access/flags';
@@ -52,6 +51,9 @@ export class ApplicationDetailComponent implements OnInit {
     startDate: [''],
     endDate: [''],
     targetGroups: [''],
+    targetEnvironments: [''],
+    targetDevices: [''],
+    compositeRules: [''], // JSON string for now
   });
 
   ngOnInit() {
@@ -102,6 +104,13 @@ export class ApplicationDetailComponent implements OnInit {
       startDate: config?.startDate ?? '',
       endDate: config?.endDate ?? '',
       targetGroups: config?.groups ? config.groups.join(', ') : '',
+      targetEnvironments: config?.environments
+        ? config.environments.join(', ')
+        : '',
+      targetDevices: config?.devices ? config.devices.join(', ') : '',
+      compositeRules: config?.conditions
+        ? JSON.stringify(config.conditions, null, 2)
+        : '',
     });
     this.isModalOpen.set(true);
   }
@@ -148,6 +157,34 @@ export class ApplicationDetailComponent implements OnInit {
           .map((g: string) => g.trim())
           .filter((g: string) => g),
       };
+    } else if (formValue.type === CircuitType.Environment) {
+      payload.controlValue = {
+        type: CircuitType.Environment,
+        environments: formValue.targetEnvironments
+          .split(',')
+          .map((e: string) => e.trim())
+          .filter((e: string) => e),
+      };
+    } else if (formValue.type === CircuitType.Device) {
+      payload.controlValue = {
+        type: CircuitType.Device,
+        devices: formValue.targetDevices
+          .split(',')
+          .map((d: string) => d.trim())
+          .filter((d: string) => d),
+      };
+    } else if (formValue.type === CircuitType.Composite) {
+      try {
+        const conditions = JSON.parse(formValue.compositeRules || '[]');
+        payload.controlValue = {
+          type: CircuitType.Composite,
+          conditions,
+        };
+      } catch (e) {
+        alert('Invalid JSON for Composite Rules');
+        this.isSubmitting.set(false);
+        return;
+      }
     }
 
     const editingFlag = this.editingFlag();
