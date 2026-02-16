@@ -7,6 +7,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { CircuitService } from './circuit.service';
 import {
   provideCircuitConfig,
+  provideRemoteCircuitConfig,
   CircuitConfig,
   CircuitType,
 } from '../circuit.config';
@@ -192,7 +193,7 @@ describe('CircuitService', () => {
           provideHttpClient(),
           provideHttpClientTesting(),
           CircuitService,
-          provideCircuitConfig(mockUrl),
+          provideRemoteCircuitConfig(mockUrl),
         ],
       });
       service = TestBed.inject(CircuitService);

@@ -53,10 +53,15 @@ export class CircuitService {
 
   private loadConfig(): void {
     if (typeof this.configLoader === 'string') {
+      const headers: Record<string, string> = {};
+      if (this.options?.apiKey) {
+        headers['x-api-key'] = this.options.apiKey;
+      }
+
       this._loading.set(true);
       // We need to subscribe to the observable to trigger the HTTP request
       this.http
-        .get<CircuitConfig>(this.configLoader)
+        .get<CircuitConfig>(this.configLoader, { headers })
         .pipe(
           tap((config) => {
             this._flags.set(this.applyOverrides(config));
