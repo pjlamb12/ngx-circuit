@@ -4,6 +4,7 @@ import {
   makeEnvironmentProviders,
   Provider,
 } from '@angular/core';
+import { provideCircuitInitializer } from './circuit-initializer/circuit.initializer';
 
 export enum CircuitType {
   Boolean = 'BOOLEAN',
@@ -101,5 +102,6 @@ export function provideRemoteCircuitConfig(
       provide: CIRCUIT_OPTIONS,
       useValue: options,
     },
+    provideCircuitInitializer(),
   ]);
 }
